@@ -38,8 +38,14 @@ pip install -r requirements/base.txt
 ## 快速启动
 
 ```bash
-./venv/Scripts/python run.py
-# 默认端口：http://127.0.0.1:5001
+# Windows PowerShell
+python -m venv venv
+./venv/Scripts/Activate.ps1
+python -m pip install -r requirements/base.txt
+
+# 使用 Flask CLI（与参考项目一致）
+python -m flask --app app:create_app run --port 5000 --debug
+# 访问：http://127.0.0.1:5000/
 ```
 
 首次启动会自动创建默认数据：
@@ -52,8 +58,10 @@ pip install -r requirements/base.txt
 - 登录/退出（`Flask-Login`）
 - 权限菜单（管理员可见：后台管理、系统设置、数据采集预览）
 - 数据采集预览（后台页面 `admin/crawl.html`）
-- 采集接口：`GET /api/crawl?kw=关键词`
-  - 返回字段：`标题`、`概要`、`封面`、`原始URL`、`来源`
+- 采集接口：
+  - `GET /api/collect?q=关键词&limit=20&pn=0`
+    - 返回字段：`title`, `cover`, `url`, `source`
+  - `GET /api/collect/xinhua?limit=20`（示例实现，返回同结构）
 
 ## 采集说明
 

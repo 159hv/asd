@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, login_required, current_user
 from . import db, login_manager
 from .models import User, Role, SystemSetting
-from .services.crawler import fetch_baidu_news
+from .services.crawler import collect_baidu, collect_xinhua_sichuan
 
 main = Blueprint('main', __name__)
 
@@ -82,21 +82,21 @@ def admin_settings():
         
     return render_template('admin/settings.html', settings=settings)
 
-@main.route('/api/crawl')
-@login_required
-def api_crawl():
-    if not current_user.is_authenticated or current_user.role.name != 'Administrator':
-        return jsonify({"error": "unauthorized"}), 403
-    kw = request.args.get('kw', '').strip() or request.args.get('q', '').strip() or request.args.get('keyword', '').strip()
-    limit = request.args.get('limit', '20')
-    pn = request.args.get('pn', '0')
-    if not kw:
-        return jsonify({"items": [], "kw": kw})
-    try:
-        items = fetch_baidu_news(kw, limit=int(limit), pn=int(pn))
-    except Exception as e:
-        return jsonify({"error": str(e), "kw": kw}), 500
-    return jsonify({"items": items, "kw": kw})
+@main.route('/api/collect')
+def api_collect():
+    q = (request.args.get('q') or request.args.get('keyword') or '').strip()
+    limit = int(request.args.get('limit') or 20)
+    pn = int(request.args.get('pn') or 0)
+    if not q:
+        return jsonify({"items": [], "q": q, "limit": limit, "pn": pn})
+    items = collect_baidu(q, limit=limit, pn=pn)
+    return jsonify({"items": items, "q": q, "limit": limit, "pn": pn})
+
+@main.route('/api/collect/xinhua')
+def api_collect_xinhua():
+    limit = int(request.args.get('limit') or 20)
+    items = collect_xinhua_sichuan(limit=limit)
+    return jsonify({"items": items, "limit": limit})
 
 @main.route('/admin/crawl')
 @login_required

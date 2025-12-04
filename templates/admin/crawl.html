@@ -10,7 +10,7 @@
       <div class="layui-form-item">
         <label class="layui-form-label">关键字</label>
         <div class="layui-input-inline">
-          <input type="text" name="kw" required lay-verify="required" placeholder="请输入关键字，如：成都" autocomplete="off" class="layui-input" value="成都">
+          <input type="text" name="q" required lay-verify="required" placeholder="请输入关键字，如：北京" autocomplete="off" class="layui-input" value="北京">
         </div>
         <button class="layui-btn" lay-submit lay-filter="crawl">预览抓取</button>
       </div>
@@ -19,11 +19,10 @@
     <table class="layui-table" id="resultTable">
       <thead>
         <tr>
-          <th>标题</th>
-          <th>概要</th>
-          <th>封面</th>
-          <th>原始URL</th>
-          <th>来源</th>
+          <th>title</th>
+          <th>cover</th>
+          <th>url</th>
+          <th>source</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -37,26 +36,25 @@ var init = function(handler){
   var form = document.getElementById('crawlForm');
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    var kw = form.querySelector('input[name="kw"]').value.trim();
-    handler(kw);
+    var q = form.querySelector('input[name="q"]').value.trim();
+    handler(q);
   });
 };
 
 var render = function(items){
   var tbody = document.querySelector('#resultTable tbody');
   if(!items || items.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5">暂无数据</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4">暂无数据</td></tr>';
     return;
   }
   var html = items.map(function(it){
-    var img = it['封面'] ? '<img src="' + it['封面'] + '" style="width:80px;height:50px;object-fit:cover">' : '';
-    var link = it['原始URL'] ? '<a href="' + it['原始URL'] + '" target="_blank">打开</a>' : '';
+    var img = it['cover'] ? '<img src="' + it['cover'] + '" style="width:80px;height:50px;object-fit:cover">' : '';
+    var link = it['url'] ? '<a href="' + it['url'] + '" target="_blank">打开</a>' : '';
     return '<tr>'+
-      '<td>' + (it['标题']||'') + '</td>'+
-      '<td>' + (it['概要']||'') + '</td>'+
+      '<td>' + (it['title']||'') + '</td>'+
       '<td>' + img + '</td>'+
       '<td>' + link + '</td>'+
-      '<td>' + (it['来源']||'') + '</td>'+
+      '<td>' + (it['source']||'') + '</td>'+
     '</tr>';
   }).join('');
   tbody.innerHTML = html;
@@ -66,11 +64,11 @@ var start = function(){
   var tbody = document.querySelector('#resultTable tbody');
   init(function(kw){
     if(!kw){ return; }
-    tbody.innerHTML = '<tr><td colspan="5">加载中...</td></tr>';
-    fetch('/api/crawl?kw=' + encodeURIComponent(kw))
+    tbody.innerHTML = '<tr><td colspan="4">加载中...</td></tr>';
+    fetch('/api/collect?q=' + encodeURIComponent(kw))
       .then(function(res){ return res.json(); })
       .then(function(json){ render(json.items || []); })
-      .catch(function(err){ tbody.innerHTML = '<tr><td colspan="5">错误：' + err + '</td></tr>'; });
+      .catch(function(err){ tbody.innerHTML = '<tr><td colspan="4">错误：' + err + '</td></tr>'; });
   });
 };
 
