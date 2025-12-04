@@ -60,7 +60,7 @@ python -m flask --app app:create_app run --port 5000 --debug
 - 数据采集预览（后台页面 `admin/crawl.html`）
 - 采集接口：
   - `GET /api/collect?q=关键词&limit=20&pn=0`
-    - 返回字段：`title`, `cover`, `url`, `source`
+    - 返回字段：`标题`、`概要`、`封面`、`原始URL`、`来源`
   - `GET /api/collect/xinhua?limit=20`（示例实现，返回同结构）
 
 ## 采集说明

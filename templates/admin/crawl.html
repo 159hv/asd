@@ -53,14 +53,14 @@ var render = function(items){
     return;
   }
   var html = items.map(function(it){
-    var img = it['cover'] ? '<img src="' + it['cover'] + '" style="width:80px;height:50px;object-fit:cover">' : '';
-    var link = it['url'] ? '<a href="' + it['url'] + '" target="_blank">打开</a>' : '';
+    var img = it['封面'] ? '<img src="' + it['封面'] + '" style="width:80px;height:50px;object-fit:cover">' : '';
+    var link = it['原始URL'] ? '<a href="' + it['原始URL'] + '" target="_blank">打开</a>' : '';
     return '<tr>'+
-      '<td>' + (it['title']||'') + '</td>'+
-      '<td>' + (it['summary']||'') + '</td>'+
+      '<td>' + (it['标题']||'') + '</td>'+
+      '<td>' + (it['概要']||'') + '</td>'+
       '<td>' + img + '</td>'+
       '<td>' + link + '</td>'+
-      '<td>' + (it['source']||'') + '</td>'+
+      '<td>' + (it['来源']||'') + '</td>'+
     '</tr>';
   }).join('');
   tbody.innerHTML = html;
@@ -68,11 +68,11 @@ var render = function(items){
   var pretty = document.getElementById('pretty');
   var lines = items.map(function(it){
     var fields = [
-      '标题： ' + (it['title']||''),
-      '概要： ' + (it['summary']||''),
-      '封面： ' + (it['cover']||''),
-      '原始URL： ' + (it['url']||''),
-      '来源： ' + (it['source']||'')
+      '标题： ' + (it['标题']||''),
+      '概要： ' + (it['概要']||''),
+      '封面： ' + (it['封面']||''),
+      '原始URL： ' + (it['原始URL']||''),
+      '来源： ' + (it['来源']||'')
     ];
     return fields.join('\n');
   }).join('\n\n');

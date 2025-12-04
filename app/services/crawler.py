@@ -58,11 +58,11 @@ def collect_baidu(keyword: str, limit: int = 20, pn: int = 0):
         if title and url:
             final_url = _resolve_final_url(url)
             items.append({
-                "title": title,
-                "summary": summary,
-                "cover": cover,
-                "url": final_url,
-                "source": source,
+                "标题": title,
+                "概要": summary,
+                "封面": cover,
+                "原始URL": final_url,
+                "来源": source,
             })
         if len(items) >= max(limit, 1):
             break
@@ -84,10 +84,11 @@ def collect_xinhua_sichuan(limit: int = 20):
             href = a.get("href")
             if title and href and href.startswith("http"):
                 items.append({
-                    "title": title,
-                    "cover": None,
-                    "url": href,
-                    "source": "新华网四川频道",
+                    "标题": title,
+                    "概要": None,
+                    "封面": None,
+                    "原始URL": href,
+                    "来源": "新华网四川频道",
                 })
             if len(items) >= limit:
                 break
