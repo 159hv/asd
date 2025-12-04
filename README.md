@@ -1,4 +1,4 @@
-# 舆情分析系统（GovinfoCheckSystemV1）
+# GovinfoCheckSystem（舆情分析系统）
 
 一个基于 B/S 架构的政企智能舆情分析报告生成智能体应用系统，前端采用 `Layui v2.13.2`，后端采用 `Python3 + Flask + SQLite`，支持用户登录、权限管理、系统设置以及新闻数据采集预览。
 
