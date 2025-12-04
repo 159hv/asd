@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>用户登录 - {{ system_settings.app_name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='layui/css/layui.css') }}">
+  <style>
+    body {
+      background-color: #0c1127; /* Dark background */
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: radial-gradient(#1d2b48 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .login-box {
+      width: 400px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .login-title {
+      text-align: center;
+      color: #fff;
+      font-size: 24px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .login-subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 12px;
+      margin-bottom: 30px;
+    }
+    .layui-form-label {
+      color: #fff;
+      width: 60px;
+    }
+    .layui-input-block {
+      margin-left: 90px;
+    }
+    .layui-input {
+      background-color: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .layui-input:focus {
+      border-color: #009688;
+    }
+    .login-btn {
+      width: 100%;
+      background-color: #1E9FFF;
+    }
+    .footer {
+      text-align: center;
+      color: #666;
+      margin-top: 20px;
+      font-size: 12px;
+    }
+    .other-login {
+      margin-top: 20px;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+    }
+    .other-login a {
+      color: #888;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <div class="login-title">用户登录</div>
+  <div class="login-subtitle">请输入您的账号信息以登录系统</div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="layui-alert" style="color: #FF5722; text-align: center; margin-bottom: 15px;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form class="layui-form" action="{{ url_for('main.login') }}" method="post">
+    <div class="layui-form-item">
+      <label class="layui-form-label"><i class="layui-icon layui-icon-username"></i> 用户名</label>
+      <div class="layui-input-block">
+        <input type="text" name="username" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label"><i class="layui-icon layui-icon-password"></i> 密&nbsp;&nbsp;&nbsp;码</label>
+      <div class="layui-input-block">
+        <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    
+
+    <div class="layui-form-item">
+      <div class="layui-input-block" style="margin-left: 0;">
+        <input type="checkbox" name="remember" title="记住我(30天)" lay-skin="primary" checked>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <button class="layui-btn login-btn" lay-submit lay-filter="formDemo">登录系统 →</button>
+    </div>
+  </form>
+
+  <div class="other-login">
+    <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i> 政务账号</a>
+    <a href="javascript:;"><i class="layui-icon layui-icon-cellphone"></i> 扫码登录</a>
+    <a href="javascript:;"><i class="layui-icon layui-icon-key"></i> CA证书</a>
+  </div>
+
+  <div class="footer">
+    © 2023 数据要素与舆情分析系统 版权所有
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='layui/layui.js') }}"></script>
+<script>
+layui.use('form', function(){
+  var form = layui.form;
+});
+</script>
+</body>
+</html>

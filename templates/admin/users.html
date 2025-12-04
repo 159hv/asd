@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}用户管理 - {{ system_settings.app_name }}{% endblock %}
+
+{% block content %}
+<div class="layui-card">
+  <div class="layui-card-header">用户管理</div>
+  <div class="layui-card-body">
+    <table class="layui-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>用户名</th>
+          <th>邮箱</th>
+          <th>角色</th>
+          <th>操作</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role.name }}</td>
+          <td>
+            <button class="layui-btn layui-btn-xs">编辑</button>
+            <button class="layui-btn layui-btn-danger layui-btn-xs">删除</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

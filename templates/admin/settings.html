@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}系统设置 - {{ system_settings.app_name }}{% endblock %}
+
+{% block content %}
+<div class="layui-card">
+  <div class="layui-card-header">系统设置</div>
+  <div class="layui-card-body">
+    <form class="layui-form" action="{{ url_for('main.admin_settings') }}" method="post">
+      <div class="layui-form-item">
+        <label class="layui-form-label">应用名称</label>
+        <div class="layui-input-block">
+          <input type="text" name="app_name" required  lay-verify="required" value="{{ settings.app_name }}" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">LOGO设置</label>
+        <div class="layui-input-block">
+          <button type="button" class="layui-btn" id="test1">
+            <i class="layui-icon">&#xe67c;</i>上传LOGO
+          </button>
+          <div class="layui-word-aux">暂未实现文件上传逻辑，仅作展示</div>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit lay-filter="formDemo">保存设置</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Demo script for form
+layui.use('form', function(){
+  var form = layui.form;
+});
+</script>
+{% endblock %}

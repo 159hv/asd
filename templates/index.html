@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="layui-card">
+  <div class="layui-card-header">欢迎使用</div>
+  <div class="layui-card-body">
+    系统框架已成功生成并运行。
+    <br>
+    当前技术栈: Flask + SQLite + Layui v2.13.2
+  </div>
+</div>
+
+<button type="button" class="layui-btn layui-btn-normal" onclick="layer.msg('Hello Layui!')">测试 Layui 弹窗</button>
+{% endblock %}

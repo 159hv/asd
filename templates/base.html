@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>{% block title %}{{ system_settings.app_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='layui/css/layui.css') }}">
+</head>
+<body>
+
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo layui-hide-xs layui-bg-black" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ system_settings.app_name }}</div>
+    <!-- Header content -->
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item layui-hide-xs"><a href="{{ url_for('main.index') }}">首页</a></li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      {% if current_user.is_authenticated %}
+      <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+        <a href="javascript:;">
+          <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" class="layui-nav-img">
+          {{ current_user.username }}
+        </a>
+        <dl class="layui-nav-child">
+          <dd><a href="">个人资料</a></dd>
+          <dd><a href="">安全设置</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item">
+        <a href="{{ url_for('main.logout') }}"><i class="layui-icon layui-icon-logout"></i> 退出</a>
+      </li>
+      {% else %}
+      <li class="layui-nav-item"><a href="{{ url_for('main.login') }}">登录</a></li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- Left navigation -->
+      <ul class="layui-nav layui-nav-tree" lay-filter="test">
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">系统菜单</a>
+          <dl class="layui-nav-child">
+            <dd><a href="{{ url_for('main.index') }}">首页</a></dd>
+            {% if current_user.is_authenticated and current_user.role.name == 'Administrator' %}
+            <dd>
+              <a href="javascript:;">后台管理</a>
+              <dl class="layui-nav-child">
+                <dd><a href="{{ url_for('main.admin_users') }}">用户管理</a></dd>
+                <dd><a href="{{ url_for('main.admin_roles') }}">角色管理</a></dd>
+                <dd><a href="{{ url_for('main.admin_crawl') }}">数据采集预览</a></dd>
+              </dl>
+            </dd>
+            <dd><a href="{{ url_for('main.admin_settings') }}">系统设置</a></dd>
+            {% endif %}
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="layui-body">
+    <!-- Content body -->
+    <div style="padding: 15px;">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  <div class="layui-footer">
+    <!-- Footer -->
+    © Govinfo Check System
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='layui/layui.js') }}"></script>
+<script>
+// Usage
+layui.use(['element', 'layer', 'util'], function(){
+  var element = layui.element
+  ,layer = layui.layer
+  ,util = layui.util
+  ,$ = layui.$;
+  
+  //Head event
+  util.event('lay-header-event', {
+    // left side menu toggle
+    menuLeft: function(othis){
+      layer.msg('Show/Hide Left Menu', {icon: 0});
+    }
+    ,menuRight: function(){
+      layer.open({
+        type: 1
+        ,content: '<div style="padding: 15px;">Right Menu Content</div>'
+        ,area: ['260px', '100%']
+        ,offset: 'rt' // Top right
+        ,anim: 5
+        ,shadeClose: true
+      });
+    }
+  });
+  
+});
+</script>
+</body>
+</html>

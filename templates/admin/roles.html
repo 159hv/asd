@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}角色管理 - {{ system_settings.app_name }}{% endblock %}
+
+{% block content %}
+<div class="layui-card">
+  <div class="layui-card-header">角色管理</div>
+  <div class="layui-card-body">
+    <table class="layui-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>角色名称</th>
+          <th>操作</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {% for role in roles %}
+        <tr>
+          <td>{{ role.id }}</td>
+          <td>{{ role.name }}</td>
+          <td>
+            <button class="layui-btn layui-btn-xs">编辑</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

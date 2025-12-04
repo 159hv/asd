@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}数据采集预览 - {{ system_settings.app_name }}{% endblock %}
+
+{% block content %}
+<div class="layui-card">
+  <div class="layui-card-header">数据采集预览</div>
+  <div class="layui-card-body">
+    <form class="layui-form" id="crawlForm">
+      <div class="layui-form-item">
+        <label class="layui-form-label">关键字</label>
+        <div class="layui-input-inline">
+          <input type="text" name="kw" required lay-verify="required" placeholder="请输入关键字，如：成都" autocomplete="off" class="layui-input" value="成都">
+        </div>
+        <button class="layui-btn" lay-submit lay-filter="crawl">预览抓取</button>
+      </div>
+    </form>
+
+    <table class="layui-table" id="resultTable">
+      <thead>
+        <tr>
+          <th>标题</th>
+          <th>概要</th>
+          <th>封面</th>
+          <th>原始URL</th>
+          <th>来源</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="layui-card-body" id="debugInfo" style="display:none"></div>
+</div>
+
+<script>
+var init = function(handler){
+  var form = document.getElementById('crawlForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var kw = form.querySelector('input[name="kw"]').value.trim();
+    handler(kw);
+  });
+};
+
+var render = function(items){
+  var tbody = document.querySelector('#resultTable tbody');
+  if(!items || items.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5">暂无数据</td></tr>';
+    return;
+  }
+  var html = items.map(function(it){
+    var img = it['封面'] ? '<img src="' + it['封面'] + '" style="width:80px;height:50px;object-fit:cover">' : '';
+    var link = it['原始URL'] ? '<a href="' + it['原始URL'] + '" target="_blank">打开</a>' : '';
+    return '<tr>'+
+      '<td>' + (it['标题']||'') + '</td>'+
+      '<td>' + (it['概要']||'') + '</td>'+
+      '<td>' + img + '</td>'+
+      '<td>' + link + '</td>'+
+      '<td>' + (it['来源']||'') + '</td>'+
+    '</tr>';
+  }).join('');
+  tbody.innerHTML = html;
+};
+
+var start = function(){
+  var tbody = document.querySelector('#resultTable tbody');
+  init(function(kw){
+    if(!kw){ return; }
+    tbody.innerHTML = '<tr><td colspan="5">加载中...</td></tr>';
+    fetch('/api/crawl?kw=' + encodeURIComponent(kw))
+      .then(function(res){ return res.json(); })
+      .then(function(json){ render(json.items || []); })
+      .catch(function(err){ tbody.innerHTML = '<tr><td colspan="5">错误：' + err + '</td></tr>'; });
+  });
+};
+
+if(window.layui && window.layui.use){
+  window.layui.use(['form'], function(){ start(); });
+} else {
+  start();
+}
+</script>
+{% endblock %}
+{% endblock %}
