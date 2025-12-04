@@ -83,11 +83,19 @@ def admin_settings():
     return render_template('admin/settings.html', settings=settings)
 
 @main.route('/api/crawl')
+@login_required
 def api_crawl():
-    kw = request.args.get('kw', '').strip()
+    if not current_user.is_authenticated or current_user.role.name != 'Administrator':
+        return jsonify({"error": "unauthorized"}), 403
+    kw = request.args.get('kw', '').strip() or request.args.get('q', '').strip() or request.args.get('keyword', '').strip()
+    limit = request.args.get('limit', '20')
+    pn = request.args.get('pn', '0')
     if not kw:
         return jsonify({"items": [], "kw": kw})
-    items = fetch_baidu_news(kw)
+    try:
+        items = fetch_baidu_news(kw, limit=int(limit), pn=int(pn))
+    except Exception as e:
+        return jsonify({"error": str(e), "kw": kw}), 500
     return jsonify({"items": items, "kw": kw})
 
 @main.route('/admin/crawl')

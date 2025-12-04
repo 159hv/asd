@@ -1,8 +1,9 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 
 
-def fetch_baidu_news(keyword: str):
+def fetch_baidu_news(keyword: str, limit: int = 20, pn: int = 0, resolve_final: bool = True):
     params = {
         "rtt": "1",
         "bsst": "1",
@@ -10,6 +11,7 @@ def fetch_baidu_news(keyword: str):
         "tn": "news",
         "rsv_dl": "ns_pc",
         "word": keyword,
+        "pn": str(pn),
     }
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -19,6 +21,9 @@ def fetch_baidu_news(keyword: str):
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
         "sec-fetch-mode": "navigate",
     }
+    cookie = os.getenv("BAIDU_COOKIE")
+    if cookie:
+        headers["cookie"] = cookie
     resp = requests.get("https://www.baidu.com/s", params=params, headers=headers, timeout=10)
     resp.raise_for_status()
     html = resp.text
@@ -35,9 +40,19 @@ def fetch_baidu_news(keyword: str):
 
         img_el = item.select_one("img")
         cover = img_el.get("src") if img_el else None
+        if not cover:
+            cover = item.get("data-thumb") if hasattr(item, "get") else None
 
         source_el = item.select_one(".c-span-last, .c-color-gray, .source, .news-source, .from")
         source = source_el.get_text(strip=True) if source_el else None
+
+        final_url = url
+        if resolve_final and url:
+            try:
+                r = requests.get(url, headers=headers, timeout=8, allow_redirects=True)
+                final_url = r.url or url
+            except Exception:
+                final_url = url
 
         if title and url:
             results.append(
@@ -46,9 +61,12 @@ def fetch_baidu_news(keyword: str):
                     "概要": summary,
                     "封面": cover,
                     "原始URL": url,
+                    "最终URL": final_url,
                     "来源": source,
                 }
             )
 
-    return results
+        if len(results) >= int(limit):
+            break
 
+    return results
