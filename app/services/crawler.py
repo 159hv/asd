@@ -49,6 +49,9 @@ def collect_baidu(keyword: str, limit: int = 20, pn: int = 0):
         img_el = item.select_one("img")
         cover = img_el.get("src") if img_el else None
 
+        summary_el = item.select_one(".c-summary, .c-font, .summary, .content, .c-line-clamp3")
+        summary = summary_el.get_text(strip=True) if summary_el else None
+
         source_el = item.select_one(".c-span-last, .c-color-gray, .source, .news-source, .from")
         source = source_el.get_text(strip=True) if source_el else None
 
@@ -56,6 +59,7 @@ def collect_baidu(keyword: str, limit: int = 20, pn: int = 0):
             final_url = _resolve_final_url(url)
             items.append({
                 "title": title,
+                "summary": summary,
                 "cover": cover,
                 "url": final_url,
                 "source": source,
